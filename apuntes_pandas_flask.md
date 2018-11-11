@@ -40,10 +40,6 @@ git commit -m "first commit"
 git remote add origin https://github.com/Richardvgs/pandas_flask.git
 git push -u origin master
 
-//
-
-4.Montar el docker -> modifique el vagrant file para que leyera un .sh que tenia la mayoria de los comandos del git 
-configurados   
 
 //Vagrantfile
 # -*- mode: ruby -*-
@@ -77,4 +73,88 @@ git commit -m "second commit"
 git push -u origin master
 
 
+#4. MONTAR DOCKER CON PYTHON, FLASK (WS), PANDAS(ANALITICA)
 
+// llamar a un contenedor ya creado en mi repositorio, el Docker File de ese contenedor es el siguiente:
+
+FROM ubuntu
+
+MAINTAINER John Sanabria - john.sanabria@gmail.com
+
+RUN apt-get update
+
+RUN apt-get -y --fix-missing install python3-pip ; exit 0
+
+RUN pip3 install Flask
+
+EXPOSE 5000
+vagrant@dockervm2:~/dockerflask2018$ nano Dockerfile 
+vagrant@dockervm2:~/dockerflask2018$ cat Dockerfile 
+FROM ubuntu
+
+MAINTAINER Ricardo Vargas - ricahrdvgs@gmail.com
+
+RUN apt-get update
+
+RUN apt-get -y --fix-missing install python3-pip ; exit 0
+
+RUN pip3 install Flask
+
+EXPOSE 5000 
+
+// para llamar ese contendedor ejecutar el siguiente comando. OJO no lo vaya a correr por que ese se va a llamar es desde un vagranti file para montar PANDAS
+docker run --rm -it -p 5000:5000 -v $(pwd):/myhome richardvgs/flask:0.0.1 /bin/bash
+
+// modificar el vagrant file de flask para ademas adicionar pandas 
+
+FROM ubuntu
+
+MAINTAINER Ricardo Vargas - richardvgs@gmail.com
+
+RUN apt-get update
+
+RUN apt-get -y --fix-missing install python3-pip ; exit 0
+
+RUN pip3 install Flask
+
+RUN pip3 install pandas numpy
+
+EXPOSE 5000
+
+
+// contruir la imagen del contenedor 
+docker build -t richardvgs/flask_pandas_taller .
+
+// correr para probarla
+docker run --rm -it -v $(pwd):/myhome richardvgs/flask_pandas_taller /bin/bash
+
+# 5. comenzar a construir el fuente en python para el web service y el analisis de datos 
+
+// crear la fuente donde se va a colocar el codigo python 
+nano ws_analitica.py
+
+#!/usr/bin/python
+from flask import Flask, jsonify, abort, make_response, request
+import pandas as pd
+
+app = Flask(__name__)
+df= None
+
+@app.route('/')
+def saludo():
+    global df
+    print( "hola")
+    return str(df.shape)
+
+if __name__ == '__main__':
+    df= pd.read_csv('/myhome/python/data_prueba.csv', sep=';')
+    app.run(host='0.0.0.0',debug=True)
+
+// probar que funcione
+	en la consola del contenedor: python3 ./ws_analitica.py 
+	en la cosnola de la maquina virtual:  curl http://localhost:5000/
+	-- va a aparecer hola en la consola del contenedor que es el unico servicio montado hasta ahora 
+
+
+
+ 
