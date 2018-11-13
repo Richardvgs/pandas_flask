@@ -103,7 +103,7 @@ RUN pip3 install Flask
 EXPOSE 5000 
 
 // para llamar ese contendedor ejecutar el siguiente comando. OJO no lo vaya a correr por que ese se va a llamar es desde un vagranti file para montar PANDAS
-docker run --rm -it -p 5000:5000 -v $(pwd):/myhome richardvgs/flask:0.0.1 /bin/bash
+docker run --rm -it -p 5000:5000 -v $(pwd):/myhome richardvgs/flask_pandas_taller  /bin/bash
 
 // modificar el vagrant file de flask para ademas adicionar pandas 
 
@@ -151,10 +151,19 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True)
 
 // probar que funcione
+	pararse en maquina virtual dentro del carpeta "docker"
+	correr el contenedor
+	docker run --rm -it -p 5000:5000 -v $(pwd):/myhome richardvgs/flask_pandas_taller /bin/bash
 	en la consola del contenedor: python3 ./ws_analitica.py 
 	en la cosnola de la maquina virtual:  curl http://localhost:5000/
 	-- va a aparecer hola en la consola del contenedor que es el unico servicio montado hasta ahora 
 
+// usar Curl para consumir servicios post - carga de archivos
+	curl -i -H "Content-Type: application/json" -X POST -d '{"title": "read a book"}' http://localhost:5000/todo/api/v1.0/tasks
 
+        curl -i -H "Content-Type: application/json" -X POST -d'{"url": "www.google.com", "sep": "c"}' http://localhost:5000/cargar_archivo
+        curl -i -H "Content-Type: application/json" -X POST -d'{"url": "https://raw.githubusercontent.com/chendaniely/pandas_for_everyone/master/data/housing.csv", "sep": "c"}' http://localhost:5000/cargar_archivo
+	curl -i -H "Content-Type: application/json" -X POST - '{ "url": "https://raw.githubusercontent.com/jennybc/gapminder/master/inst/extdata/gapminder.tsv", "sep": "\t"}' http://localhost:5000/cargar_archivo
 
+//
  
