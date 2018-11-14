@@ -56,6 +56,58 @@ def tipo_datos():
 	resp =" "+str(tipo_dato)+ "\n"
 	return(" "+ resp)	
 
+#FUNCIONES DE AGREGACION 
+@app.route('/funcion', methods=['POST'])
+def funcion():
+	global df
+	atributo = request.json.get('atributo')
+	operador = request.json.get('operador')
+	cabecera = df.columns.values.tolist()
+	columna= [0]	
+	respuesta= ""
+
+	if atributo in cabecera: 
+		columna = df[atributo]
+
+		respuesta = "operador invalido"		
+		if str(operador) ==  "media": 
+			respuesta= "media: " + str(columna.mean())
+		if str(operador) == "mediana":
+			respuesta= "mediana: " + str(columna.median())
+		if str(operador) == "moda":
+			respuesta= "moda: "+ str(columna.mode())	
+					 
+	else:
+		return("dato invalido \n")
+	
+	return(""+ respuesta+" \n") 
+
+
+
+#AGRUPACION
+@app.route('/agrupacion', methods=['POST'])
+def agrupacion(): 
+	global df
+	agrupar= request.json.get('agrupar')
+	campos= request.json.get('campos')
+	operador= request.json.get('operador')
+	grouped= df.groupby(agrupar)[campos]
+
+	respuesta = "operador invalido"
+	if str(operador) ==  "media":
+		respuesta= "media: " + str(grouped.mean()) 
+	if str(operador) == "mediana":
+		respuesta= "mediana: " + str(grouped.median())
+	if str(operador) == "sum":
+		respuesta= "sum: "+ str(grouped.sum())	
+#	print("dato ",len(df))
+#	print("dato ",type(df))
+#	print("dato: ", str(grouped.mean())) 
+	return(respuesta+ "\n")
+
+
+
+
 if __name__ == '__main__':
     df= pd.read_csv('/myhome/python/data_prueba.csv', sep=';')
     app.run(host='0.0.0.0',debug=True)
