@@ -231,3 +231,24 @@ CMD [ "/myhome/ws_analitica.py" ]
 
 	curl -i http://tallerpacifictic202-env.hizvr3mngk.us-east-2.elasticbeanstalk.com/tipos
 
+#6. PREPARAR PRESENTACION
+	
+	a. cargar archivo de la web:
+	curl -i -H "Content-Type: application/json" -X POST -d'{"url": "https://raw.githubusercontent.com/chendaniely/pandas_for_everyone/master/data/housing.csv", "sep": "c"}' http://tallerpacifictic202-env.hizvr3mngk.us-east-2.elasticbeanstalk.com/cargar_archivo
+		
+	b. consultar numero de filas y columnas
+	curl -i http://tallerpacifictic202-env.hizvr3mngk.us-east-2.elasticbeanstalk.com/shape
+
+	c. mostrar nombre de atributo de los datos 
+	curl -i http://tallerpacifictic202-env.hizvr3mngk.us-east-2.elasticbeanstalk.com/atributos
+
+	curl -i -H "Content-Type: application/json" -X POST -d '{ "url": "https://raw.githubusercontent.com/jennybc/gapminder/master/inst/extdata/gapminder.tsv", "sep": "\t"}' http://tallerpacifictic202-env.hizvr3mngk.us-east-2.elasticbeanstalk.com/cargar_archivo 
+
+	d. funciones de agregacion 	
+	curl -i -H "Content-Type: application/json" -X POST -d'{"atributo": "year", "operador": "media"}' http://tallerpacifictic202-env.hizvr3mngk.us-east-2.elasticbeanstalk.com/funcion
+	curl -i -H "Content-Type: application/json" -X POST -d'{"atributo": "year", "operador": "mediana"}' http://tallerpacifictic202-env.hizvr3mngk.us-east-2.elasticbeanstalk.com/funcion
+
+	e. agrupar
+	curl -i -H "Content-Type: application/json" -X POST -d '{"agrupar": "country", "campos": "lifeExp", "operador": "sum"}' http://tallerpacifictic202-env.hizvr3mngk.us-east-2.elasticbeanstalk.com/agrupacion
+	curl -i -H "Content-Type: application/json" -X POST -d '{"agrupar": "country", "campos": "lifeExp", "operador": "media"}' http://tallerpacifictic202-env.hizvr3mngk.us-east-2.elasticbeanstalk.com/agrupacion
+
